@@ -1,0 +1,31 @@
+{
+  "cli_version": "0.2.18",
+  "node_version": "24.18.0",
+  "model": "Qwen/Qwen3-4B",
+  "dtype": "bfloat16",
+  "thinking": false,
+  "transformers": "5.15.1",
+  "torch": "2.6.0+cu124",
+  "hardware": "NVIDIA H100 80GB",
+  "max_output_tokens": 4096,
+  "context_window": 32768,
+  "wall_time_limit_seconds": 1800,
+  "cases": [
+    {
+      "case": "CASE-001-diagnostic-generalization",
+      "seconds": 286.838,
+      "model_requests": 66,
+      "completed": true,
+      "numerical_passed": false,
+      "reason": "The required results/predictions.csv file was absent."
+    },
+    {
+      "case": "CASE-002-symptom-generalization",
+      "seconds": 31.164,
+      "model_requests": 5,
+      "completed": true,
+      "numerical_passed": false,
+      "reason": "The required results/predictions.csv file was absent."
+    }
+  ]
+}

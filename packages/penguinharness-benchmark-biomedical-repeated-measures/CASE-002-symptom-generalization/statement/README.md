@@ -10,7 +10,7 @@ The intended use is methodological assessment of a speech based monitoring model
 
 The input table is `data/parkinsons_updrs.data`, a comma-separated text file with a header row. Read it with `pandas.read_csv('data/parkinsons_updrs.data')` from the statement workspace. The accompanying source documentation is `data/parkinsons_updrs.names`. All input data are supplied locally.
 
-Use the UCI Parkinsons Telemonitoring dataset supplied in `data/`. It contains 5,875 recordings from 42 people with early stage Parkinson's disease, collected over approximately six months. The CSV has 22 columns and occupies 911,261 bytes. There are no missing entries. This is a public secondary analysis, with no newly collected patient data.
+Use the UCI Parkinsons Telemonitoring dataset supplied in `data/`. It contains 5,875 recordings from 42 people with early stage Parkinson's disease, collected over approximately six months. The CSV has 22 columns and occupies 911,261 bytes. There are no missing entries. The analysis uses these published observations.
 
 The outcome is `motor_UPDRS`, a motor symptom severity score. The source clinical scores were linearly interpolated between clinical assessments. The recording rows therefore do not represent 5,875 independent clinical examinations. `subject#` identifies the patient, `test_time` measures days since enrollment, and `sex` is coded 0 for male and 1 for female in the source documentation.
 
@@ -39,11 +39,11 @@ Write executable code in `analysis.py` and the following outputs in `results/`. 
 - `contrasts.csv`: four rows with columns `model,contrast,mean_difference,resampling_lower,resampling_upper,n_patients_positive,n_patients`. The contrast names are `acoustic_gain_unseen_patients` and `patient_minus_recording_error`, with signs as defined above. Use the same resampling draw matrix for all contrasts.
 - `interpretation.md`: explain the observed protocol gap, the evidence for additional acoustic information, and limitations of interpolated scores, the small cohort and the conditional resampling intervals.
 
-Numerical evaluation checks complete prediction coverage, targets, fold assignments, participant identities, agreement with the fixed reference fits, metrics and paired contrasts. Scientific interpretation is reviewed separately and is not reduced to a keyword test. No particular direction of the acoustic effect is required. Negative or inconclusive findings are valid results. Claims about prospective clinical use, causal effects or diagnostic accuracy are outside this task.
+Numerical evaluation checks complete prediction coverage, targets, fold assignments, participant identities, agreement with the fixed reference fits, metrics and paired contrasts. Scientific interpretation is reviewed separately. Report the direction and uncertainty of each estimated contrast.
 
 ## Computational requirements
 
-Use Python 3.12 and the versions in `requirements.txt`. Four CPU cores and 2 GB RAM are sufficient. No GPU, external service or additional data are required. The reference fitting procedure takes approximately a minute on a multicore workstation. The full analysis, interpretation and verification require additional time.
+Use Python 3.12 and the versions in `requirements.txt`. Four CPU cores and 2 GB RAM are sufficient. The reference fitting procedure takes approximately a minute on a multicore workstation. The full analysis, interpretation and verification require additional time.
 
 ## Sources and rights
 

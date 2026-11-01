@@ -2,7 +2,7 @@
 
 This pilot evaluates a small local model on the two biomedical analyses through a native Python execution tool.
 
-The model was Qwen/Qwen3-4B in bfloat16 with Transformers 5.15.1 and PyTorch 2.6.0+cu124 on an NVIDIA H100. Thinking was disabled. Sampling used temperature 0.7, top-p 0.8 and top-k 20, with seeds 20261031, 20261032 and 20261033. Each attempt had a fresh workspace containing only the statement and public input files. Each model call was limited to 4,096 output tokens and the total context to 32,768 tokens. A task could use up to 20 model turns and 1,800 seconds. A Python subprocess could run for up to 120 seconds within that budget. Three independent processes ran one attempt per task, without model or task tuning after observing the results.
+The model was Qwen/Qwen3-4B in bfloat16 with Transformers 5.15.1 and PyTorch 2.6.0+cu124 on an NVIDIA H100. Thinking was disabled. Sampling used temperature 0.7, top-p 0.8 and top-k 20, with seeds 20261031, 20261032 and 20261033. Each attempt had a fresh workspace containing only the statement and public input files. Each model call was limited to 4,096 output tokens and the total context to 32,768 tokens. A task could use up to 20 model turns and 1,800 seconds. A Python subprocess could run for up to 120 seconds within that budget. Three independent processes ran one attempt per task, with the same model and task settings across attempts.
 
 The harness executes fenced Python code in subprocesses on a shared host filesystem. Each task workspace contains the statement and public data. Evaluator files remain in the separate repository checkout. Library installation paths in exported error traces are abbreviated as `<site-packages>`; model messages, code, errors and outcomes are preserved.
 
@@ -19,7 +19,20 @@ The harness executes fenced Python code in subprocesses on a shared host filesys
 
 All six attempts guessed `data/parkinsons.csv`, received `FileNotFoundError`, and ended at the file-discovery stage. The actual filenames were present in each task's `data/` directory. The measured outcome is therefore file discovery and error recovery under this model and tool protocol; statistical-analysis performance remains unmeasured.
 
-The revised statements give the exact input filenames and parsing commands. The six traces above correspond to the original statements. Evaluation of the revised statements is pending.
+The revised statements give the exact input filenames and parsing commands. The six traces above correspond to the original statements.
+
+## Official CLI evaluation of the revised statements
+
+PenguinHarness CLI 0.2.18 was run with Node.js 24.18.0, its default agent and Qwen3-4B through an OpenAI chat endpoint served by Transformers 5.15.1. The model used bfloat16, disabled thinking and server seed 20261101 on an H100. Each case had a fresh session and workspace, a 32,768-token context, 4,096 output tokens per request and a 1,800-second time limit. The native reference evaluator scored the resulting workspace.
+
+| Case | Model requests | Seconds | Numerical result |
+|---|---:|---:|---|
+| 001 | 66 | 286.838 | Failed: prediction file absent |
+| 002 | 5 | 31.164 | Failed: prediction file absent |
+
+Both attempts read the correct input table. In case 001 the model extracted an incorrect participant identifier and then repeatedly attempted ineffective edits. In case 002 it loaded the data and ended with an intention to write the analysis. Both sessions ended before producing predictions. These outcomes identify implementation and completion failures under this small model. Statistical estimation accuracy remains unmeasured for these attempts.
+
+The model messages, tool calls and outputs are in `official_cli/`, alongside the measured results. Workspace and library paths are abbreviated in the exported traces. `run_penguin_native.py` reproduces the CLI invocation and subsequent numerical evaluation. Supply the package, output directory, installed CLI path, Python executable and configured model id as its arguments.
 
 ## Reference analysis and verification
 
@@ -37,7 +50,7 @@ Recompute and grade both reference analyses on CPU using the task requirements:
 python replay_references.py --package /path/to/packages/penguinharness-benchmark-biomedical-repeated-measures --output reference_replay.json
 ```
 
-Install the scientific dependencies in the statement directories and PyTorch 2.6.0 with Transformers 5.15.1 in a GPU environment. Download the original Qwen/Qwen3-4B model separately. Model weights are not part of the task package.
+Install the scientific dependencies in the statement directories and PyTorch 2.6.0 with Transformers 5.15.1 in a GPU environment. Download the original Qwen/Qwen3-4B model separately.
 
 ```bash
 python run_pilot.py --model /path/to/Qwen3-4B --package /path/to/packages/penguinharness-benchmark-biomedical-repeated-measures --output /path/to/pilot-results --attempt 1

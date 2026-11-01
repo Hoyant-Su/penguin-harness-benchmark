@@ -1,8 +1,8 @@
 id = "penguinharness-benchmark-biomedical-repeated-measures"
 title = "Biomedical prediction across patients and recordings"
 description = "Two reproducible biomedical data analysis tasks on public repeated voice measurements, testing patient separation, predictor eligibility, patient-level evaluation and interpretation of conditional resampling intervals."
-version = "0.1.0"
-last_update = "2026-10-30T20:50:04Z"
+version = "0.1.1"
+last_update = "2026-11-01T02:33:10Z"
 status = "draft"
 
 [author]
