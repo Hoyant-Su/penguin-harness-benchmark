@@ -34,6 +34,44 @@ Both attempts read the correct input table. In case 001 the model extracted an i
 
 The model messages, tool calls and outputs are in `official_cli/`, alongside the measured results. Workspace and library paths are abbreviated in the exported traces. `run_penguin_native.py` reproduces the CLI invocation and subsequent numerical evaluation. Supply the package, output directory, installed CLI path, Python executable and configured model id as its arguments.
 
+To repeat the official CLI runs, use Node.js 24.18.0 and the recorded Python dependencies. From the repository root, install the CLI:
+
+```bash
+npm install --prefix /path/to/penguin-cli @prismshadow/penguin-cli@0.2.18
+```
+
+Start the model server in one terminal:
+
+```bash
+CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=4 transformers serve Qwen/Qwen3-4B \
+  --host 127.0.0.1 --port 18536 --device cuda:0 --dtype bfloat16 \
+  --attn-implementation sdpa --reasoning off --default-seed 20261101
+```
+
+Start the CLI server in a second terminal, using a fresh directory for its state:
+
+```bash
+export PENGUIN_HOME=/path/to/penguin-state
+/path/to/penguin-cli/node_modules/.bin/penguin server --port 18538 --host 127.0.0.1
+```
+
+In a third terminal, configure the endpoint and run both cases from the repository root. Use absolute paths and a new output directory:
+
+```bash
+export PENGUIN_HOME=/path/to/penguin-state
+export OMP_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 MKL_NUM_THREADS=4
+/path/to/penguin-cli/node_modules/.bin/penguin config model add \
+  --provider custom --model-id Qwen/Qwen3-4B --api-key local \
+  --base-url http://127.0.0.1:18536/v1 --client-type openai-chat \
+  --context-window 32768 --max-tokens 4096 --set-default
+python data/penguinharness-benchmark-biomedical-repeated-measures/pilot/run_penguin_native.py \
+  --package "$PWD/packages/penguinharness-benchmark-biomedical-repeated-measures" \
+  --output /path/to/cli-results \
+  --cli /path/to/penguin-cli/node_modules/.bin/penguin \
+  --python /path/to/python \
+  --model Qwen/Qwen3-4B
+```
+
 ## Reference analysis and verification
 
 Both reference analyses passed the complete numerical verifiers. Fresh CPU fits in temporary workspaces also passed against the committed reference predictions, taking approximately 5 and 39 seconds respectively in the recorded environment. The executable procedure is `replay_references.py`, with software versions and outcomes in `reference_replay.json`.

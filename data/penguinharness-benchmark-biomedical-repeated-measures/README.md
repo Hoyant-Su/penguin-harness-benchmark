@@ -4,7 +4,7 @@ This contribution contains two numerical research tasks on repeated acoustic mea
 
 Task instructions and evaluator materials are under `../../packages/penguinharness-benchmark-biomedical-repeated-measures/`. Each case follows RFC-0001, with `statement/`, `rubric/` and `task_config.toml`. Copy only `statement/` into a test agent's workspace. Reference solutions and numerical outputs belong to the evaluator.
 
-The files under `pilot/` contain an exploratory native Qwen3-4B run, its source code and all six attempted trajectories. See [the pilot report](pilot/REPORT.md) for methods, failures and limitations. The pilot uses a native Python tool runner. The two reference solutions pass their numerical verifiers, and eight deliberately corrupted submissions are rejected.
+The files under `pilot/` contain six exploratory Qwen3-4B trajectories and two official CLI trajectories, together with their runners and numerical results. See [the pilot report](pilot/REPORT.md) for methods, failures and limitations. The pilot uses a native Python tool runner. The two reference solutions pass their numerical verifiers, and eight deliberately corrupted submissions are rejected.
 
 ## Data and scientific scope
 
