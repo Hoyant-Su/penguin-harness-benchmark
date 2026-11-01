@@ -1,10 +1,10 @@
 # Native Qwen3-4B pilot
 
-This pilot asks whether a small local model, given a Python execution tool, completes the two biomedical analyses. It is an exploratory integration test of the supplied tasks. It is not an official PenguinHarness or Harbor run, a calibrated frontier-model evaluation, or a claim about self-improvement.
+This pilot evaluates a small local model on the two biomedical analyses through a native Python execution tool.
 
 The model was Qwen/Qwen3-4B in bfloat16 with Transformers 5.15.1 and PyTorch 2.6.0+cu124 on an NVIDIA H100. Thinking was disabled. Sampling used temperature 0.7, top-p 0.8 and top-k 20, with seeds 20261031, 20261032 and 20261033. Each attempt had a fresh workspace containing only the statement and public input files. Each model call was limited to 4,096 output tokens and the total context to 32,768 tokens. A task could use up to 20 model turns and 1,800 seconds. A Python subprocess could run for up to 120 seconds within that budget. Three independent processes ran one attempt per task, without model or task tuning after observing the results.
 
-The harness provides Python execution through a fenced-code convention. It does not provide adversarial filesystem isolation. Evaluator files were not copied into the agent workspaces, but this pilot should not be used to claim protection against a malicious agent. Library installation paths in exported error traces are abbreviated as `<site-packages>`; model messages, code, errors and outcomes are otherwise preserved.
+The harness executes fenced Python code in subprocesses on a shared host filesystem. Each task workspace contains the statement and public data. Evaluator files remain in the separate repository checkout. Library installation paths in exported error traces are abbreviated as `<site-packages>`; model messages, code, errors and outcomes are preserved.
 
 ## Outcomes
 
@@ -17,15 +17,25 @@ The harness provides Python execution through a fenced-code convention. It does 
 | 001 | 3 | 2 | 57.3 | 5283 | 2230 | 0 |
 | 002 | 3 | 2 | 98.8 | 7706 | 3979 | 0 |
 
-All six attempts guessed the nonexistent input path `data/parkinsons.csv`, received `FileNotFoundError`, and ended without the required predictions. The correct filenames were present in each task's `data/` directory and could have been inspected through Python. These are file-discovery and recovery failures. They do not demonstrate that the model reached, or failed at, the substantive statistical analysis. The small model and custom tool convention also prevent attributing the outcome solely to the task. No inference about frontier-model difficulty is supported.
+All six attempts guessed `data/parkinsons.csv`, received `FileNotFoundError`, and ended at the file-discovery stage. The actual filenames were present in each task's `data/` directory. The measured outcome is therefore file discovery and error recovery under this model and tool protocol; statistical-analysis performance remains unmeasured.
+
+The revised statements give the exact input filenames and parsing commands. The six traces above correspond to the original statements. Evaluation of the revised statements is pending.
 
 ## Reference analysis and verification
 
-Both reference analyses passed the complete numerical verifiers. Eight deliberately incorrect outputs, covering a missing prediction row, an invalid fold, an altered prediction and an incorrect metric in each task, were rejected. The diagnostic calculation identifies 32 distinct participant labels in the CSV, despite 31 participants in the source narrative. This discrepancy is disclosed in the task. Reference fitting and scoring use the observed labels without undocumented merges.
+Both reference analyses passed the complete numerical verifiers. Fresh CPU fits in temporary workspaces also passed against the committed reference predictions, taking approximately 5 and 39 seconds respectively in the recorded environment. The executable procedure is `replay_references.py`, with software versions and outcomes in `reference_replay.json`.
 
-The diagnostic results show higher patient Brier error under patient splitting for both fixed estimators. The symptom-severity analysis shows a large validation-protocol gap and inconclusive conditional intervals for additional acoustic information in unseen patients. Those are results of the prescribed analyses, not claims that the small cohorts establish clinical effectiveness.
+Eight deliberately incorrect outputs, covering a missing prediction row, an invalid fold, an altered prediction and an incorrect metric in each task, were rejected. The check first requires the unmodified reference to pass and then verifies assertion failures for each altered output. The diagnostic calculation identifies 32 distinct participant labels in the CSV, compared with 31 participants in the source narrative. Reference fitting and scoring use the observed labels.
+
+The diagnostic results show higher patient Brier error under patient splitting for both fixed estimators. The symptom-severity analysis shows a large validation-protocol gap and inconclusive conditional intervals for additional acoustic information in unseen patients. These estimates describe the supplied retrospective cohorts under the prescribed analysis.
 
 ## Reproduction
+
+Recompute and grade both reference analyses on CPU using the task requirements:
+
+```bash
+python replay_references.py --package /path/to/packages/penguinharness-benchmark-biomedical-repeated-measures --output reference_replay.json
+```
 
 Install the scientific dependencies in the statement directories and PyTorch 2.6.0 with Transformers 5.15.1 in a GPU environment. Download the original Qwen/Qwen3-4B model separately. Model weights are not part of the task package.
 
@@ -35,4 +45,4 @@ python run_pilot.py --model /path/to/Qwen3-4B --package /path/to/packages/pengui
 
 Repeat with attempts 2 and 3. Model executions resume from saved conversation and random-generator state after an interruption. Hardware and software differences can change generated trajectories. The reference fits and numerical evaluation are separately reproducible on CPU.
 
-The task package, reference calculations and pilot runner were prepared with assistance from OpenAI Codex. The exported pilot code and responses were generated by Qwen3-4B. No human review or maintainer acceptance is claimed.
+The task package, reference calculations and pilot runner were prepared with assistance from OpenAI Codex. The exported pilot code and responses were generated by Qwen3-4B.

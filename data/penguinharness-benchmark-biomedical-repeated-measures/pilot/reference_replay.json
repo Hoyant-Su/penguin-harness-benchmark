@@ -1,0 +1,24 @@
+{
+  "python": "3.12.0",
+  "dependencies": {
+    "numpy": "2.2.6",
+    "pandas": "2.3.3",
+    "scipy": "1.17.0",
+    "scikit-learn": "1.8.0"
+  },
+  "method": "Fresh CPU fits in temporary statement workspaces, graded against committed reference outputs.",
+  "cases": [
+    {
+      "case": "CASE-001-diagnostic-generalization",
+      "reference_passed": true,
+      "elapsed_seconds": 5.174032721668482,
+      "verifier_stdout": "{\"score\": 100, \"numerical_checks\": \"pass\", \"patients\": 32}"
+    },
+    {
+      "case": "CASE-002-symptom-generalization",
+      "reference_passed": true,
+      "elapsed_seconds": 39.102574810385704,
+      "verifier_stdout": "{\"status\": \"pass\", \"configurations\": 8, \"patients\": 42}\n{\"score\": 100, \"reference_predictions\": \"pass\"}"
+    }
+  ]
+}

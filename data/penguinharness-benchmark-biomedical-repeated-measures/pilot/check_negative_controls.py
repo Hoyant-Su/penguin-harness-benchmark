@@ -16,6 +16,9 @@ PACKAGE = args.package
 results = []
 for case in sorted(PACKAGE.glob('CASE-*')):
     data = next((case / 'statement/data').glob('*.data'))
+    subprocess.run([sys.executable, str(case / 'rubric/evaluate.py'),
+        '--data', str(data), '--output', str(case / 'rubric/reference_results')],
+        capture_output=True, text=True, check=True)
     for mutation in ['missing_row', 'wrong_fold', 'wrong_prediction', 'wrong_metric']:
         with tempfile.TemporaryDirectory() as tmp:
             output = Path(tmp) / 'results'
@@ -35,7 +38,7 @@ for case in sorted(PACKAGE.glob('CASE-*')):
                 metrics.to_csv(output / 'metrics.csv', index=False)
             predictions.to_csv(output / 'predictions.csv', index=False)
             run = subprocess.run([sys.executable, str(case/'rubric/evaluate.py'), '--data', str(data), '--output', str(output)], capture_output=True, text=True)
-            assert run.returncode != 0, (case.name, mutation)
+            assert run.returncode == 1 and 'AssertionError' in run.stderr, (case.name, mutation, run.stderr)
             results.append(dict(case=case.name, mutation=mutation, rejected=True))
 args.output.write_text(json.dumps(results,indent=2)+'\n')
 print('All eight deliberately incorrect submissions were rejected.')

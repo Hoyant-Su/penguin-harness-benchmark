@@ -8,6 +8,8 @@ The intended use is methodological assessment of a speech based monitoring model
 
 ## Input data
 
+The input table is `data/parkinsons_updrs.data`, a comma-separated text file with a header row. Read it with `pandas.read_csv('data/parkinsons_updrs.data')` from the statement workspace. The accompanying source documentation is `data/parkinsons_updrs.names`. All input data are supplied locally.
+
 Use the UCI Parkinsons Telemonitoring dataset supplied in `data/`. It contains 5,875 recordings from 42 people with early stage Parkinson's disease, collected over approximately six months. The CSV has 22 columns and occupies 911,261 bytes. There are no missing entries. This is a public secondary analysis, with no newly collected patient data.
 
 The outcome is `motor_UPDRS`, a motor symptom severity score. The source clinical scores were linearly interpolated between clinical assessments. The recording rows therefore do not represent 5,875 independent clinical examinations. `subject#` identifies the patient, `test_time` measures days since enrollment, and `sex` is coded 0 for male and 1 for female in the source documentation.
