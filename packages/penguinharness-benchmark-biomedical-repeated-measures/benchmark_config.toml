@@ -1,8 +1,8 @@
 id = "penguinharness-benchmark-biomedical-repeated-measures"
 title = "Biomedical prediction across patients and recordings"
-description = "Two reproducible biomedical data analysis tasks on public repeated voice measurements, testing patient separation, predictor eligibility, patient-level evaluation and interpretation of conditional resampling intervals."
-version = "0.1.1"
-last_update = "2026-11-01T02:33:10Z"
+description = "Two biomedical prediction tasks using the UCI Parkinsons (doi:10.24432/C59C74) and Parkinsons Telemonitoring (doi:10.24432/C5ZS3N) datasets. They assess generalization across patients, predictor eligibility and patient-level evaluation. Each task receives 100 points when all numerical checks pass and the required analysis and interpretation files are present, and 0 otherwise. Scientific interpretation is reviewed separately."
+version = "0.1.2"
+last_update = "2026-11-03T03:31:24Z"
 status = "draft"
 
 [author]
