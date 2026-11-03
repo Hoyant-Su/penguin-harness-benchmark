@@ -1,6 +1,6 @@
 # Numerical evaluation
 
-The test agent receives only `statement/`. Keep this rubric, its reference implementation and expected results outside the agent workspace. Run the verifier after the agent finishes. The supplied native pilot does not provide adversarial filesystem isolation and must not be described as an official Harbor evaluation.
+The test agent receives only `statement/`. Keep this rubric, its reference implementation and expected results outside the agent workspace. Run the verifier after the agent finishes.
 
 From this case directory, reproduce the reference with:
 
